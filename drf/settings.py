@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # project apps
-    'apps.api.apps.ApiConfig',
     'apps.products.apps.ProductsConfig',
     'apps.users.apps.UsersConfig',
 
