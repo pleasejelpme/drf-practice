@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 import sys
 import  os
 
+# Loading .env variables
 load_dotenv()
 
 # Letting know django that i'll be storing apps in the 'apps' folder
@@ -48,11 +49,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # project apps
-    'apps.products.apps.ProductsConfig',
-    'apps.users.apps.UsersConfig',
+    'apps.products',
+    'apps.orders',
 
     # third party apps
     'rest_framework',
+    'rest_framework.authtoken',
     'phonenumber_field',
 ]
 
@@ -139,4 +141,11 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'users.User'
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+}

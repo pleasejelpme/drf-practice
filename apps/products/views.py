@@ -3,15 +3,14 @@ from rest_framework.generics import (
     RetrieveAPIView, 
     ListCreateAPIView, 
     RetrieveUpdateAPIView, 
-    RetrieveDestroyAPIView
+    RetrieveDestroyAPIView,
+    GenericAPIView
     )
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-
-from apps.products.models import Product
-from apps.products.serializers import ProductSerializer
+from .permissions import StaffEditorPermitions
+from .models import Product
+from .serializers import ProductSerializer
 
 
 # @api_view(['GET', 'POST'])
@@ -31,44 +30,40 @@ from apps.products.serializers import ProductSerializer
 
 
 # LIST AND CREATE PRODUCTS
-class ProductListCreateAPIVIEW(ListCreateAPIView):
+class ProductListCreateAPIView(ListCreateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializer 
+    authentication_classes = [
+        SessionAuthentication, 
+        TokenAuthentication]
+    
+    permission_classes = [StaffEditorPermitions]   
 
 
 # DETAIL PRODUCT
-class ProductDetailAPIVIEW(RetrieveAPIView):
+class ProductDetailAPIView(RetrieveAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
-
+    serializer_class = ProductSerializer 
+    permission_classes = [StaffEditorPermitions]
 
 # UPDATE PRODUCT
 class ProductUpdateAPIView(RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+    permission_classes = [StaffEditorPermitions]
     
-    # def perform_update(self, serializer):
-    #     instance = serializer.save()
-    #     if not instance.description:
-    #         instance.description = instance.name
-    #     return super().perform_update(serializer)
-
 
 # DELETE PRODUCT
-
 class ProductDestroyAPIView(RetrieveDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-
-
-
+    permission_classes = [StaffEditorPermitions] 
 
 
 
 
 # Renaming views for urls
-create_list_product = ProductListCreateAPIVIEW.as_view()
-detail_product = ProductDetailAPIVIEW.as_view()
+create_list_product = ProductListCreateAPIView.as_view()
+detail_product = ProductDetailAPIView.as_view()
 update_product = ProductUpdateAPIView.as_view()
 delete_product = ProductDestroyAPIView.as_view()
