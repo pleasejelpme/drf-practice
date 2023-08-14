@@ -1,6 +1,10 @@
 from django.db import models
+from django.conf import settings
+
+User = settings.AUTH_USER_MODEL
 
 class Product(models.Model):
+    user = models.ForeignKey(User, default=1, null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=120, unique=True)
     stock = models.PositiveIntegerField(default=0)
     description = models.TextField(null=True, blank=True)

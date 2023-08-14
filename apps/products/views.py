@@ -36,8 +36,12 @@ class ProductListCreateAPIView(ListCreateAPIView):
     authentication_classes = [
         SessionAuthentication, 
         TokenAuthentication]
-    
     permission_classes = [StaffEditorPermitions]   
+
+    def get_queryset(self):
+        request = self.request
+        print(request.user)
+        return super().get_queryset()
 
 
 # DETAIL PRODUCT

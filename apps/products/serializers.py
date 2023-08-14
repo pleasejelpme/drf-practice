@@ -1,10 +1,23 @@
 from rest_framework import serializers
+
+from .validators import validate_name, validate_discount, validate_stock
 from .models import Product
 
 class ProductSerializer(serializers.ModelSerializer):
+    detail_url = serializers.HyperlinkedIdentityField(view_name='product-detail', lookup_field='pk')
+    update_url = serializers.HyperlinkedIdentityField(view_name='product-update', lookup_field='pk')
+    delete_url = serializers.HyperlinkedIdentityField(view_name='product-delete', lookup_field='pk')
+    name = serializers.CharField(validators=[validate_name])
+    stock = serializers.IntegerField(validators=[validate_stock])
+    discount = serializers.IntegerField(validators=[validate_discount])
+
     class Meta:
         model = Product
         fields = [
+            'id',
+            'detail_url',
+            'update_url',
+            'delete_url',
             'name',
             'description',
             'price',
@@ -13,20 +26,4 @@ class ProductSerializer(serializers.ModelSerializer):
             'price_discount',
             'discount_percentage',
         ]
-
-    def validate_stock(self, value):
-        if value < 0:
-            raise serializers.ValidationError('Stock cannot be a negative number')
-        return value
-
-    def validate_discount(self, value):
-        if value >= 100 or value < 0:
-            raise serializers.ValidationError('Discount has to be between 0 and 100')
-        
-        if value == 0:
-            value = 1
-            return value
-        
-        value = value / 100
-        return value
 
